@@ -1,40 +1,129 @@
 ( function( blocks, blockEditor, element, components ) {
     var __ = wp.i18n.__;
     var el = element.createElement;
-    var RichText = blockEditor.RichText;
-    var MediaUpload = blockEditor.MediaUpload;
+    var InnerBlocks = blockEditor.InnerBlocks;
+    var useState = wp.element.useState;
+    var useEffect = wp.element.useEffect;
+    var useSelect = wp.data.useSelect;
+    var useDispatch = wp.data.useDispatch;
     var CheckboxControl = components.CheckboxControl;
     var InspectorControls = blockEditor.InspectorControls;
     var PanelBody = components.PanelBody;
-    var ColorPalette = components.ColorPalette;
     var TextControl = components.TextControl;
     var SelectControl = components.SelectControl;
-    var useState = wp.element.useState;
+    var Button = components.Button;
 
-    // registerBlockType
+    // 子ブロック
+    blocks.registerBlockType( 'liquid/slider-slide', {
+        title: __('Slide', 'liquid-blocks'),
+        icon: 'images-alt2',
+        category: 'liquid',
+        parent: ['liquid/slider'],
+        supports: {
+            inserter: false, // インサーターパネルからの表示を防ぐ
+        },
+        edit: function( props ) {
+            var { clientId } = props;
+            var { getBlockIndex, getBlockOrder, getBlockRootClientId } = useSelect( select => select('core/block-editor') );
+            
+            // ブロックのインデックスを取得
+            var rootClientId = getBlockRootClientId(clientId);
+            var blockIndex = getBlockIndex(clientId, rootClientId);
+            var blockOrder = getBlockOrder(rootClientId);
+
+            // コアのUPボタンをクリックする関数
+            function triggerUpButton() {
+                const toolbar = document.querySelector('.block-editor-block-toolbar');
+                if (toolbar) {
+                    const upButton = toolbar.querySelector('.is-up-button');
+                    if (upButton) {
+                        upButton.click();
+                    } else {
+                        console.log('UPボタンが見つかりませんでした');
+                    }
+                }
+            }
+
+            // コアのDOWNボタンをクリックする関数
+            function triggerDownButton() {
+                const toolbar = document.querySelector('.block-editor-block-toolbar');
+                if (toolbar) {
+                    const downButton = toolbar.querySelector('.is-down-button');
+                    if (downButton) {
+                        downButton.click();
+                    } else {
+                        console.log('DOWNボタンが見つかりませんでした');
+                    }
+                }
+            }
+
+            return el('div', {
+                className: 'liquid_slider_slide',
+                style: {
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    border: '1px solid #ccc',
+                    marginBottom: '1rem',
+                    position: 'relative'
+                }
+            },
+            el(InnerBlocks, {
+                template: [
+                    ['core/cover', {}]
+                ],
+                templateLock: false,
+                renderAppender: InnerBlocks.ButtonBlockAppender,
+            }),
+            el('div', {
+                className: 'slide-controls',
+                style: {
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    display: 'flex',
+                    gap: '5px',
+                    zIndex: '2'  // z-index を追加
+                }
+            },
+                // 先頭でない場合に UP ボタンを表示
+                blockIndex > 0 && el(Button, {
+                    isSmall: true,
+                    isPrimary: true,
+                    onClick: triggerUpButton,
+                }, __('Up', 'liquid-blocks')),
+                
+                // 最後でない場合に DOWN ボタンを表示
+                blockIndex < blockOrder.length - 1 && el(Button, {
+                    isSmall: true,
+                    isPrimary: true,
+                    onClick: triggerDownButton,
+                }, __('Down', 'liquid-blocks')),
+                
+                el(Button, {
+                    isSmall: true,
+                    isDestructive: true,
+                    onClick: () => wp.data.dispatch('core/block-editor').removeBlock(clientId),
+                }, __('Remove', 'liquid-blocks'))
+            ));
+        },
+        save: function() {
+            return el('div', {
+                className: 'liquid_slider_slide swiper-slide',
+                style: {
+                    width: '100%',
+                    boxSizing: 'border-box',
+                }
+            },
+            el(InnerBlocks.Content));
+        },
+    } );
+
+    // 親ブロック
     blocks.registerBlockType( 'liquid/slider', {
         title: __('Carousel Slider', 'liquid-blocks'),
         icon: 'slides',
         category: 'liquid',
         attributes: {
-            fields: {
-                type: 'array',
-                default: [{ 
-                    text: '',
-                    textAlignment: 'start',
-                    textFontSize: 16,
-                    textTextColor: '',
-                    textBackgroundColor: '',
-                    url: '',
-                    openInNewTab: false,
-                    image: '',
-                    buttonText: '',
-                    buttonAlignment: 'start',
-                    buttonFontSize: 16,
-                    buttonTextColor: '',
-                    buttonBorderColor: '',
-                }],
-            },
             delay: {
                 type: 'number',
                 default: 3000,
@@ -50,159 +139,91 @@
             autoPlay: {
                 type: 'boolean',
                 default: true,
-            },
-            overlay: {
-                type: 'boolean',
-                default: true,
-            },
+            }
         },
         supports: {
             align: ['wide', 'full']
         },
-        example: {
-            attributes: {
-                fields: [
-                    { 
-                        text: 'Sample Text',
-                        buttonText: 'Sample Button',
-                        url: '',
-                        openInNewTab: false,
-                        image: '',
-                        textTextColor: '#333333',
-                        textBackgroundColor: '',
-                        buttonTextColor: '#ffffff',
-                        buttonBackgroundColor: '#333333',
-                    }
-                ],
-                delay: 3000,
-                slidesPerView: 1.0,
-                animationType: 'slide',
-            }
-        },
-
         edit: function( props ) {
             var attributes = props.attributes;
             var setAttributes = props.setAttributes;
-            var clientId = props.clientId;
-            var magicNumber = 10/2;
-            var showDuplicate = false;
+            var magicNumber = 10;
 
-            var [selectedFieldIndex, setSelectedFieldIndex] = useState(0);
-            var [selectedFieldType, setSelectedFieldType] = useState('');
-            var [selectedOption, setSelectedOption] = useState(0);
+            var [selectedSlide, setSelectedSlide] = useState(0);
+            var blocks = useSelect( select => select('core/block-editor').getBlocks(props.clientId), [props.clientId]);
 
-            function updateField( index, changes ) {
-                var newFields = attributes.fields.slice();
-                newFields[index] = Object.assign({}, newFields[index], changes);
-                setAttributes({ fields: newFields });
+            function handleTabClick(index) {
+                setSelectedSlide(index);
             }
 
-            function addFieldset() {
-                if (attributes.fields.length < magicNumber) {
-                    var newField = { 
-                        text: '',
-                        buttonText: '',
-                        url: '',
-                        openInNewTab: false,
-                        image: ''
-                    };
-                    var newFields = attributes.fields.concat([newField]);
-                    setAttributes({ fields: newFields });
-                    setSelectedOption(newFields.length-1);
-                }
-            }
-
-            function duplicateFieldset(index) {
-                var fields = attributes.fields;
-                if (fields.length < magicNumber) {
-                    var fieldToDuplicate = Object.assign({}, fields[index]);
-                    var newFields = fields.slice();
-                    newFields.splice(index + 1, 0, fieldToDuplicate);
-                    setAttributes({ fields: newFields });
-                    setSelectedOption(index + 1);
-                }
-            }
-
-            function removeFieldset(index) {
-                var newFields = attributes.fields.slice();
-                newFields.splice(index, 1);
-                setAttributes({ fields: newFields });
-                
-                if (selectedOption === index) {
-                    if (index > 0) {
-                        // 直前のコンテンツを選択
-                        setSelectedOption(index - 1);
-                    } else if (newFields.length > 0) {
-                        // 最初のコンテンツが削除された場合で、他にコンテンツが存在するなら、新しい最初のフィールドを選択
-                        setSelectedOption(0);
-                    } else {
-                        // すべてのコンテンツが削除された場合
-                        setSelectedOption(null);
+            useEffect(() => {
+                blocks.forEach((block, index) => {
+                    const blockElement = document.querySelector(`[data-block="${block.clientId}"]`);
+                    if (blockElement) {
+                        if (index === selectedSlide) {
+                            // 選択されたスライドを表示
+                            blockElement.style.visibility = 'visible';
+                            blockElement.style.height = 'auto';
+                            blockElement.style.minHeight = '';
+                            blockElement.style.padding = '';
+                            blockElement.style.pointerEvents = '';
+                        } else {
+                            // 非選択のスライドを非表示
+                            blockElement.style.visibility = 'hidden';
+                            blockElement.style.height = '0';
+                            blockElement.style.minHeight = '0';
+                            blockElement.style.padding = '0';
+                            blockElement.style.pointerEvents = 'none';
+                        }
                     }
-                }
-            }
+                });
+            }, [selectedSlide, blocks]);
 
-            function moveFieldUp(index) {
-                if (index === 0) return;
-                const newFields = [...attributes.fields];
-                [newFields[index - 1], newFields[index]] = [newFields[index], newFields[index - 1]];
-                setAttributes({ fields: newFields });
-                setSelectedOption(index - 1);
-            }
-
-            function moveFieldDown(index) {
-                if (index === attributes.fields.length - 1) return;
-                const newFields = [...attributes.fields];
-                [newFields[index + 1], newFields[index]] = [newFields[index], newFields[index + 1]];
-                setAttributes({ fields: newFields });
-                setSelectedOption(index + 1);
-            }
-
-            function handleFieldSelect(index, type) {
-                setSelectedFieldIndex(index);
-                setSelectedFieldType(type);
-            }
-
-            function handleClick(index, event) {
-                // 子要素からのイベントを無視
-                if (event.target.closest('.ignoreClick')) {
-                    event.stopPropagation();
-                    return;
-                }
-                handleFieldSelect(index, '');
-            }
-
-            function handleRadioChange(event) {
-                setSelectedOption(parseInt(event.target.value, 10));
-            }
-
-            function updateAlignment(index, type, alignment) {
-                const newFields = [...attributes.fields];
-                if (type === 'text') {
-                    newFields[index].textAlignment = alignment;
-                } else if (type === 'buttonText') {
-                    newFields[index].buttonAlignment = alignment;
-                }
-                setAttributes({ fields: newFields });
-            }
-
-            return [
-                // 条件によって BlockControls を表示
-                selectedFieldType === 'text' && el(blockEditor.BlockControls, {},
-                    el(blockEditor.AlignmentToolbar, {
-                        value: attributes.fields[selectedFieldIndex].textAlignment,
-                        onChange: (newAlignment) => updateAlignment(selectedFieldIndex, 'text', newAlignment)
-                    })
+            return el('div', { className: 'liquid_blocks_slider' },
+                el('div', { className: 'tab-wrap', style: { display: 'flex', alignItems: 'center' } },
+                    blocks.map((block, index) => {
+                        return el('button', {
+                            key: index,
+                            onClick: () => handleTabClick(index),
+                            style: {
+                                cursor: 'pointer',
+                                padding: '5px 10px',
+                                background: selectedSlide === index ? '#ddd' : '#f5f5f5',
+                                marginRight: '5px',
+                                border: '1px solid #ccc',
+                                borderRadius: '5px 5px 0 0'
+                            }
+                        }, __('Slide', 'liquid-blocks') + ` ${index + 1}`);
+                    }),
+                    blocks.length < magicNumber && el('button', {
+                        onClick: () => {
+                            const newBlock = wp.blocks.createBlock('liquid/slider-slide');
+                            wp.data.dispatch('core/block-editor').replaceInnerBlocks(props.clientId, [...blocks, newBlock], false);
+                            handleTabClick(blocks.length);  // 新しいスライドを追加してそのスライドを選択
+                        },
+                        style: {
+                            padding: '5px 10px',
+                            background: '#4CAF50',
+                            color: 'white',
+                            border: 'none',
+                            cursor: 'pointer',
+                            border: '1px solid #ccc',
+                            borderRadius: '5px 5px 0 0'
+                        }
+                    }, __('Add Slide', 'liquid-blocks'))
                 ),
-                selectedFieldType === 'buttonText' && el(blockEditor.BlockControls, {},
-                    el(blockEditor.AlignmentToolbar, {
-                        value: attributes.fields[selectedFieldIndex].buttonAlignment,
-                        onChange: (newAlignment) => updateAlignment(selectedFieldIndex, 'buttonText', newAlignment)
+                el('div', { className: 'slides-container', style: { width: '100%' } },
+                    el(InnerBlocks, {
+                        allowedBlocks: ['liquid/slider-slide'],
+                        templateLock: false,
+                        template: [
+                            ['liquid/slider-slide', {}]  // 挿入時にデフォルトで追加
+                        ],
                     })
                 ),
                 el(InspectorControls, {},
                     el(PanelBody, { title: __('Slider Settings', 'liquid-blocks'), initialOpen: true },
-                        (selectedFieldType !== 'buttonText' && selectedFieldType !== 'text') && el('div', {},
+                        el('div', {},
                             el(TextControl, {
                                 label: __('Delay (millisecond)', 'liquid-blocks'),
                                 value: attributes.delay,
@@ -226,217 +247,33 @@
                                 label: __('Auto Play', 'liquid-blocks'),
                                 checked: attributes.autoPlay,
                                 onChange: (newVal) => setAttributes({ autoPlay: newVal }),
-                            }),
-                            el(CheckboxControl, {
-                                label: __('Overlay', 'liquid-blocks'),
-                                checked: attributes.overlay,
-                                onChange: (newVal) => setAttributes({ overlay: newVal })
-                            }),
-                        ),
-                        selectedFieldType === 'text' && el('div', {},
-                            el('p', {}, __('Font Size', 'liquid-blocks')),
-                            el(components.RangeControl, {
-                                value: attributes.fields[selectedFieldIndex].textFontSize,
-                                onChange: (newSize) => {
-                                    let newFields = [...attributes.fields];
-                                    newFields[selectedFieldIndex].textFontSize = newSize;
-                                    setAttributes({ fields: newFields });
-                                },
-                                min: 8, max: 200, step: 1
-                            }),
-                            el('p', {}, __('Text Color', 'liquid-blocks')),
-                            el(ColorPalette, {
-                                value: attributes.fields[selectedFieldIndex].textTextColor,
-                                onChange: (color) => {
-                                    let fields = [...attributes.fields];
-                                    fields[selectedFieldIndex].textTextColor = color;
-                                    setAttributes({ fields });
-                                }
-                            }),
-                            el('p', {}, __('Background Color', 'liquid-blocks')),
-                            el(ColorPalette, {
-                                value: attributes.fields[selectedFieldIndex].textBackgroundColor,
-                                onChange: (color) => {
-                                    let fields = [...attributes.fields];
-                                    fields[selectedFieldIndex].textBackgroundColor = color;
-                                    setAttributes({ fields });
-                                }
                             })
-                        ),
-                        selectedFieldType === 'buttonText' && el('div', {},
-                            el('p', {}, __('Font Size', 'liquid-blocks')),
-                            el(components.RangeControl, {
-                                value: attributes.fields[selectedFieldIndex].buttonFontSize,
-                                onChange: (newSize) => {
-                                    let newFields = [...attributes.fields];
-                                    newFields[selectedFieldIndex].buttonFontSize = newSize;
-                                    setAttributes({ fields: newFields });
-                                },
-                                min: 8, max: 200, step: 1
-                            }),
-                            el('p', {}, __('Text Color', 'liquid-blocks')),
-                            el(ColorPalette, {
-                                value: attributes.fields[selectedFieldIndex].buttonTextColor,
-                                onChange: (color) => {
-                                    let fields = [...attributes.fields];
-                                    fields[selectedFieldIndex].buttonTextColor = color;
-                                    setAttributes({ fields });
-                                }
-                            }),
-                            el('p', {}, __('Background Color', 'liquid-blocks')),
-                            el(ColorPalette, {
-                                value: attributes.fields[selectedFieldIndex].buttonBackgroundColor,
-                                onChange: (color) => {
-                                    let fields = [...attributes.fields];
-                                    fields[selectedFieldIndex].buttonBackgroundColor = color;
-                                    setAttributes({ fields });
-                                }
-                            }),
-                            el('p', {}, __('Border Color', 'liquid-blocks')),
-                            el(ColorPalette, {
-                                value: attributes.fields[selectedFieldIndex].buttonBorderColor,
-                                onChange: (color) => {
-                                    let fields = [...attributes.fields];
-                                    fields[selectedFieldIndex].buttonBorderColor = color;
-                                    setAttributes({ fields });
-                                }
-                            }),
                         )
                     )
                 ),
-
-                el('div', { className: 'liquid_blocks_slider tab-wrap' },
-                    attributes.fields.length < magicNumber && el('button', {
-                        className: 'tab-add',
-                        onClick: addFieldset
-                    }, __('Add Contents', 'liquid-blocks')),
-                    attributes.fields.map((field, index) => {
-                        const fieldId = `radio-${clientId}-${index}`;
-                        checked = ( index == 0 ) ? 'checked' : '';
-                        return [
-                            el('input', { 
-                                id: fieldId,
-                                className: 'tab-switch',
-                                type: 'radio',
-                                name: fieldId,
-                                value: index,
-                                checked: selectedOption === index,
-                                onChange: handleRadioChange,
-                            }),
-                            el('label', { 
-                                htmlFor: fieldId,
-                                className: 'tab-label',
-                            }, index + 1 ),
-                            el('div', { 
-                                key: index, 
-                                className: 'liquid_blocks_slider_fieldset tab-content',
-                                onClick: (event) => handleClick(index, event),
-                            },
-                                el(MediaUpload, {
-                                    onSelect: function( media ) {
-                                        updateField(index, Object.assign({}, field, { image: media.url }));
-                                    },
-                                    allowedTypes: 'image',
-                                    value: field.image,
-                                    render: function( obj ) {
-                                        return el('div', {},
-                                            field.image && el('img', { src: field.image }),
-                                            el('br'),
-                                            el('button', {
-                                                onClick: obj.open,
-                                            }, field.image ? __('Change Image', 'liquid-blocks') : __('Select Image', 'liquid-blocks')),
-                                            field.image && el('button', {
-                                                onClick: function() {
-                                                    updateField(index, Object.assign({}, field, { image: '' }));
-                                                },
-                                            }, __('Clear Image', 'liquid-blocks'))
-                                        );
-                                    },
-                                }),
-                                el('div', {}, __('Text', 'liquid-blocks')),
-                                el(RichText, {
-                                    tagName: 'p',
-                                    className: 'ignoreClick',
-                                    value: field.text,
-                                    onChange: function( newText ) {
-                                        updateField(index, Object.assign({}, field, { text: newText }));
-                                    },
-                                    onFocus: () => handleFieldSelect(index, 'text'),
-                                    placeholder: '',
-                                    style: { 
-                                        textAlign: field.textAlignment,
-                                        fontSize: `${field.textFontSize}px`,
-                                        color: field.textTextColor,
-                                        backgroundColor: field.textBackgroundColor,
-                                    },
-                                }),
-                                el('p', {}, __('Button Text', 'liquid-blocks')),
-                                el(RichText, {
-                                    tagName: 'p',
-                                    className: 'ignoreClick',
-                                    value: field.buttonText,
-                                    onChange: function( newText ) {
-                                        updateField(index, { buttonText: newText });
-                                    },
-                                    onFocus: () => handleFieldSelect(index, 'buttonText'),
-                                    placeholder: '',
-                                    style: {
-                                        textAlign: field.buttonAlignment,
-                                        fontSize: `${field.buttonFontSize}px`,
-                                        color: field.buttonTextColor,
-                                        backgroundColor: field.buttonBackgroundColor,
-                                        borderColor: field.buttonBorderColor,
-                                    },
-                                }),
-                                el('p', {}, 'URL'),
-                                el('input', {
-                                    type: 'url',
-                                    name: fieldId+'-url',
-                                    value: field.url,
-                                    onChange: function( event ) {
-                                        updateField(index, Object.assign({}, field, { url: event.target.value }));
-                                    },
-                                    onFocus: () => handleFieldSelect(index, 'url'),
-                                    placeholder: 'https://',
-                                }),
-                                el(CheckboxControl, {
-                                    label: __('Open in new tab', 'liquid-blocks'),
-                                    checked: field.openInNewTab,
-                                    onChange: function( newVal ) {
-                                        updateField(index, Object.assign({}, field, { openInNewTab: newVal }));
-                                    },
-                                }),
-                                el('div', { className: 'fieldset-buttons' },
-                                    index !== 0 ? el('a', {
-                                        onClick: () => moveFieldUp(index),
-                                        className: 'up-fieldset-button',
-                                    }, '\u003C') : el('span'),
-                                    el('span', {}, __('Sort', 'liquid-blocks')),
-                                    index !== attributes.fields.length - 1 ? el('a', {
-                                        onClick: () => moveFieldDown(index),
-                                        className: 'down-fieldset-button',
-                                    }, '\u003E') : el('span'),
-                                    attributes.fields.length > 1 ? el('a', {
-                                        onClick: function() { removeFieldset(index); },
-                                        className: 'remove-fieldset-button'
-                                    }, __('Delete this content', 'liquid-blocks')) : el('span'),
-                                    showDuplicate && el('a', {
-                                        onClick: () => duplicateFieldset(index),
-                                        className: 'duplicate-fieldset-button',
-                                    }, __('Duplicate', 'liquid-blocks')),
-                                )
-                            )
-                        ];
-                    })
-                )
-            ];
+            );
         },
-
-        save: function() {
-            return null;
+        save: function( props ) {
+            const { attributes } = props;
+    
+            return el('div', {
+                className: 'liquid_blocks_slider swiper',  // .swiper クラスを親要素に追加
+                'data-slides-per-view': attributes.slidesPerView,
+                'data-animation-type': attributes.animationType,
+                'data-delay': attributes.delay,
+                'data-autoplay': attributes.autoPlay.toString(),
+            },
+                el('div', { className: 'slides-container swiper-wrapper' },
+                    el(InnerBlocks.Content)  // 子ブロックの内容が保存される
+                ),
+                // Swiper用のHTML要素
+                el('div', { className: 'swiper-pagination' }),
+                el('div', { className: 'swiper-button-next' }),
+                el('div', { className: 'swiper-button-prev' })
+            );
         },
     } );
-}( 
+}(
     window.wp.blocks,
     window.wp.blockEditor,
     window.wp.element,

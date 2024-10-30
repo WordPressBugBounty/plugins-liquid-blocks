@@ -234,94 +234,6 @@ Author URI: https://lqd.jp/wp/
     display: none;
 }
 
-/* slider */
-.liquid_blocks_slider {
-    max-width: 100%;
-    padding: 1rem;
-    font-size: 14px;
-}
-
-.liquid_blocks_slider_fieldset {
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 5px;
-}
-
-.liquid_blocks_slider_fieldset > p {
-    margin: 0;
-}
-
-.liquid_blocks_slider img {
-    max-width: 50%;
-    height: auto;
-}
-
-.liquid_blocks_slider button {
-    display: inline-block;
-    cursor: pointer;
-    background-color: #00A5D4;
-    color: #fff;
-    border: none;
-    padding: .25rem .75rem;
-    margin: 0 .75rem .5rem 0;
-    text-align: center;
-    text-decoration: none;
-    line-height: 1.5;
-    border-radius: 5px;
-}
-
-.liquid_blocks_slider button:hover,
-.liquid_blocks_slider button:focus,
-.liquid_blocks_slider .tab-label:hover,
-.liquid_blocks_slider .tab-label:focus {
-    color: #fff !important;
-    background-color: #006799 !important;
-}
-
-.liquid_blocks_slider p[role="textbox"],
-.liquid_blocks_slider input[type="url"] {
-    width: 100%;
-    padding: .25rem .75rem;
-    margin: 0 0 .5rem 0;
-    background-color: #fff;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    min-height: auto;
-    line-height: 1.5;
-}
-
-.liquid_blocks_slider .fieldset-buttons {
-    margin-top: .5rem;
-    padding-top: .5rem;
-    border-top: 1px solid #ccc;
-}
-.liquid_blocks_slider .fieldset-buttons .duplicate-fieldset-button, 
-.liquid_blocks_slider .fieldset-buttons .remove-fieldset-button, 
-.liquid_blocks_slider .fieldset-buttons .up-fieldset-button,
-.liquid_blocks_slider .fieldset-buttons .down-fieldset-button {
-    text-decoration: none;
-    cursor: pointer;
-    margin-right: .5rem;
-    display: inline-block;
-}
-.liquid_blocks_slider .fieldset-buttons .duplicate-fieldset-button, 
-.liquid_blocks_slider .fieldset-buttons .remove-fieldset-button {
-    float: right;
-}
-.liquid_blocks_slider .fieldset-buttons .remove-fieldset-button {
-    color: red !important;
-}
-.liquid_blocks_slider .fieldset-buttons .up-fieldset-button,
-.liquid_blocks_slider .fieldset-buttons .down-fieldset-button {
-    transform: scale(1, 1.5);
-}
-.liquid_blocks_slider .fieldset-buttons .down-fieldset-button {
-    margin-left: .5rem;
-}
-
 /* tab */
 .liquid_blocks_slider.tab-wrap {
     display: flex;
@@ -358,9 +270,11 @@ Author URI: https://lqd.jp/wp/
 .liquid_blocks_slider .tab-switch {
     display: none !important;
 }
+.block-editor-list-view-leaf {
+    visibility: visible !important;
+}
 
 /* accordion */
-
 .liquid-accordion-top {
     cursor: auto;
     user-select: auto;
@@ -368,4 +282,10 @@ Author URI: https://lqd.jp/wp/
 .liquid-accordion-bottom {
     opacity: 1;
     visibility: visible;
+}
+
+/* custom-field */
+.liquid_custom_field p {
+    padding: 1rem 2rem;
+    background-color: #f0f0f0;
 }

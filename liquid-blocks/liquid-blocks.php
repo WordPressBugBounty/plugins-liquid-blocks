@@ -8,7 +8,7 @@ Author URI: https://lqd.jp/wp/
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: liquid-blocks
-Version: 1.2.0
+Version: 1.3.0
 */
 /*  Copyright 2019 LIQUID DESIGN Ltd. (email : info@lqd.jp)
 
@@ -45,20 +45,19 @@ if ( is_admin() ) {
 // notices
 function liquid_blocks_admin_notices() {
     global $json_liquid_blocks, $json_liquid_blocks_error;
-    if ( isset( $_GET['liquid_admin_notices_dismissed'] ) ) {
-        set_transient( 'liquid_admin_notices', 'dismissed', 60*60*24*30 );
-    }
-    if ( isset( $_GET['liquid_admin_offer_dismissed'] ) ) {
-        set_transient( 'liquid_admin_offer', 'dismissed', 60*60*24*30 );
-    }
-    if( !empty($json_liquid_blocks['news']) && get_transient( 'liquid_admin_notices' ) != 'dismissed' ){
-        echo '<div class="notice notice-info" style="position: relative;"><p>'.$json_liquid_blocks['news'].'</p><a href="?liquid_admin_notices_dismissed" style="position: absolute; right: 10px; top: 10px;">&times;</a></div>';
-    }
-    if( !empty($json_liquid_blocks['offer']) && get_transient( 'liquid_admin_offer' ) != 'dismissed' ){
-        echo '<div class="notice notice-info" style="position: relative;"><p>'.$json_liquid_blocks['offer'].'</p><a href="?liquid_admin_offer_dismissed" style="position: absolute; right: 10px; top: 10px;">&times;</a></div>';
-    }
-    if( !empty($json_liquid_blocks_error) ) {
-        echo '<script>console.log("'.$json_liquid_blocks_error.'");</script>';
+    if( empty($json_liquid_blocks_error) ) {
+        if ( isset( $_GET['liquid_admin_notices_dismissed'] ) ) {
+            set_transient( 'liquid_admin_notices', 'dismissed', 60*60*24*30 );
+        }
+        if ( isset( $_GET['liquid_admin_offer_dismissed'] ) ) {
+            set_transient( 'liquid_admin_offer', 'dismissed', 60*60*24*30 );
+        }
+        if( !empty($json_liquid_blocks['news']) && get_transient( 'liquid_admin_notices' ) != 'dismissed' ){
+            echo '<div class="notice notice-info" style="position: relative;"><p>'.$json_liquid_blocks['news'].'</p><a href="?liquid_admin_notices_dismissed" style="position: absolute; right: 10px; top: 10px;">&times;</a></div>';
+        }
+        if( !empty($json_liquid_blocks['offer']) && get_transient( 'liquid_admin_offer' ) != 'dismissed' ){
+            echo '<div class="notice notice-info" style="position: relative;"><p>'.$json_liquid_blocks['offer'].'</p><a href="?liquid_admin_offer_dismissed" style="position: absolute; right: 10px; top: 10px;">&times;</a></div>';
+        }
     }
 }
 add_action( 'admin_notices', 'liquid_blocks_admin_notices' );
@@ -88,8 +87,9 @@ function liquid_blocks_assets() {
     global $liquid_blocks_data;
     wp_enqueue_style( 'liquid-blocks', plugins_url( 'css/block.css' , __FILE__ ), array( 'swiper' ), $liquid_blocks_data['version'] );
     // slider
-    wp_enqueue_script( 'swiper', plugins_url( 'lib/swiper-bundle.min.js' , __FILE__ ), array() );
     wp_enqueue_style( 'swiper', plugins_url( 'css/swiper-bundle.min.css' , __FILE__ ), array() );
+    wp_enqueue_script( 'swiper', plugins_url( 'lib/swiper-bundle.min.js' , __FILE__ ), array() );
+    wp_enqueue_script( 'liquid-blocks', plugins_url( 'lib/liquid-blocks.js' , __FILE__ ), array( 'swiper' ) );
 }
 
 function liquid_blocks_enqueue_block_editor_assets(){
@@ -197,7 +197,6 @@ function liquid_blocks_admin_footer() {
 // ------------------------------------
 // init
 // ------------------------------------
-include_once plugin_dir_path( __FILE__ ) . 'inc/block-slider.php';
 
 // block_categories
 function liquid_block_categories($categories, $post) {
@@ -238,12 +237,10 @@ function liquid_blocks_init(){
     // translations
     load_plugin_textdomain( 'liquid-blocks', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
-    // dynamic blocks
     // slider
     register_block_type( 'liquid/slider', array(
         'editor_script' => 'liquid-blocks-slider',
         'editor_style'  => 'liquid-blocks-editor',
-        'render_callback' => 'liquid_blocks_render_slider',
         'attributes' => array(
             'fields' => array(
                 'type' => 'array',
@@ -259,8 +256,32 @@ function liquid_blocks_init(){
             ),
         ),
     ) );
-    wp_register_script( 'liquid-blocks-slider', plugins_url( 'lib/block-slider.js', __FILE__ ), array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-components' ) );
-    wp_set_script_translations( 'liquid-blocks-slider', 'liquid-blocks', plugin_dir_path( __FILE__ ) . 'languages' );
+    wp_register_script( 
+        'liquid-blocks-slider', 
+        plugins_url( 'lib/block-slider.js', __FILE__ ), 
+        array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-components' ) 
+    );
+    wp_set_script_translations( 
+        'liquid-blocks-slider', 
+        'liquid-blocks', 
+        plugin_dir_path( __FILE__ ) . 'languages' 
+    );
+
+    // カスタムフィールド
+    register_block_type('liquid/custom-field', array(
+        'editor_script' => 'liquid-blocks-custom-field',
+        'render_callback' => 'liquid_blocks_render_custom_field',
+    ));
+    wp_register_script(
+        'liquid-blocks-custom-field',
+        plugin_dir_url(__FILE__) . 'lib/block-custom-field.js',
+        array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-components')
+    );
+    wp_set_script_translations( 
+        'liquid-blocks-custom-field', 
+        'liquid-blocks', 
+        plugin_dir_path( __FILE__ ) . 'languages' 
+    );
 
     // unregister_block_pattern
     if( !empty($liquid_blocks_clean) ){
@@ -378,6 +399,70 @@ function liquid_blocks_init(){
 			}
 		}
 		wp_reset_postdata();
+    }
+}
+
+// カスタムフィールドブロックのレンダリング
+function liquid_blocks_render_custom_field($attributes) {
+    // カスタムフィールドキーと投稿IDの取得
+    $fieldKey = isset($attributes['fieldKey']) ? $attributes['fieldKey'] : '';
+    $postId = isset($attributes['postId']) && !empty($attributes['postId']) ? intval($attributes['postId']) : get_the_ID();
+    
+    // フィールドタイプを取得（テキストか画像か）
+    $fieldType = isset($attributes['fieldType']) ? $attributes['fieldType'] : 'text';
+
+    // デフォルトの alignment を設定
+    $alignment = isset($attributes['alignment']) ? $attributes['alignment'] : 'left';
+
+    // 追加CSSクラスを取得
+    $customClass = isset($attributes['className']) ? $attributes['className'] : '';
+
+    // スタイル属性を構築
+    $style = 'text-align:' . esc_attr($alignment) . ';';
+
+    // カスタムフィールドデータの取得
+    if (!empty($fieldKey)) {
+        $fieldValue = get_post_meta($postId, $fieldKey, true);
+
+        // フィールドタイプに基づいて処理を分ける
+        if ($fieldType === 'image') {
+            // 画像の場合
+            if (is_array($fieldValue)) {
+                // 繰り返し画像フィールドの場合の処理
+                $output = '<div class="liquid_custom_field_repeatable">';
+                foreach ($fieldValue as $mediaId) {
+                    $image_url = wp_get_attachment_url($mediaId);
+                    if ($image_url) {
+                        $output .= '<div class="liquid_custom_field_item"><img src="' . esc_url($image_url) . '" alt="" /></div>';
+                    }
+                }
+                $output .= '</div>';
+            } else {
+                // 単一画像フィールドの場合
+                $image_url = wp_get_attachment_url($fieldValue);
+                if ($image_url) {
+                    $output = '<div class="liquid_custom_field_item"><img src="' . esc_url($image_url) . '" alt="" /></div>';
+                }
+            }
+        } else {
+            // テキストの場合
+            if (is_array($fieldValue)) {
+                // 繰り返しテキストフィールドの場合の処理
+                $output = '<div class="liquid_custom_field_repeatable">';
+                foreach ($fieldValue as $value) {
+                    $output .= '<div class="liquid_custom_field_item">' . esc_html($value) . '</div>';
+                }
+                $output .= '</div>';
+            } else {
+                // 単一テキストフィールドの場合の処理
+                $output = '<div class="liquid_custom_field_item">' . esc_html($fieldValue) . '</div>';
+            }
+        }
+
+        // 追加CSSクラスを適用してカスタムフィールドの内容をスタイル付きのdivでラップ
+        return '<div class="liquid_custom_field ' . esc_attr($customClass) . '" style="' . esc_attr($style) . '">' . $output . '</div>';
+    } else {
+        return '<div class="liquid_custom_field ' . esc_attr($customClass) . '">' . __('No custom field selected.', 'liquid-blocks') . '</div>';
     }
 }
 

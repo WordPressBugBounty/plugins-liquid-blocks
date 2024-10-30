@@ -3,12 +3,12 @@ Contributors: lqd
 Donate link: https://lqd.jp/wp/plugin/blocks.html
 Tags: gutenberg, blocks, pattern, slider, carousel
 Requires at least: 6.0
-Tested up to: 6.5.3
-Stable tag: 1.2.0
+Tested up to: 6.6.2
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This is a plugin to extend the block editor.
+This plugin extends the block editor.
 
 == Description ==
 
@@ -28,6 +28,7 @@ Simple yet powerful blocks.
 * Carousel Slider (Slideshow, Fade)
 * Accordion
 * Card
+* Custom Field
 
 = Toolbar =
 
@@ -53,10 +54,16 @@ Carefully selected 37+ Free Designs.
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Use 'LIQUID BLOCKS' in the 'Gutenberg editor' menu
 
+== Frequently Asked Questions ==
+
+= Q: This block contains unexpected or invalid content? =
+
+A: Try More options > Attempt Block Recovery.
+
 == Screenshots ==
 
-1. Design Gallery.
-2. Carousel Slider.
+1. Carousel Slider.
+2. Design Gallery.
 3. RichText Toolbar.
 4. Design Gallery.
 5. Design Gallery.
@@ -65,6 +72,9 @@ Carefully selected 37+ Free Designs.
 8. Design Gallery.
 
 == Changelog ==
+
+= 1.3.0 =
+* Add Custom Field block and Update Slider Block.
 
 = 1.2.0 =
 * Add Carousel Slider, Accordion, and Card blocks.
