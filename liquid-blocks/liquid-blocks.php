@@ -8,7 +8,7 @@ Author URI: https://lqd.jp/wp/
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: liquid-blocks
-Version: 1.3.0
+Version: 1.3.1
 */
 /*  Copyright 2019 LIQUID DESIGN Ltd. (email : info@lqd.jp)
 

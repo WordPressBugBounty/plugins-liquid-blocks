@@ -283,9 +283,3 @@ Author URI: https://lqd.jp/wp/
     opacity: 1;
     visibility: visible;
 }
-
-/* custom-field */
-.liquid_custom_field p {
-    padding: 1rem 2rem;
-    background-color: #f0f0f0;
-}
