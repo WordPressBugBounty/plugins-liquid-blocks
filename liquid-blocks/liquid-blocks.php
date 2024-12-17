@@ -8,7 +8,7 @@ Author URI: https://lqd.jp/wp/
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: liquid-blocks
-Version: 1.3.1
+Version: 1.3.2
 */
 /*  Copyright 2019 LIQUID DESIGN Ltd. (email : info@lqd.jp)
 
@@ -30,33 +30,27 @@ Version: 1.3.1
 // ------------------------------------
 $liquid_blocks_data = get_file_data( __FILE__, array( 'version' => 'Version'));
 
-// json
+// api
 if ( is_admin() ) {
-    $json_liquid_blocks_error = "";
-    $json_liquid_blocks_url = "https://lqd.jp/wp/data/p/liquid-blocks.json";
-    $json_liquid_blocks = wp_remote_get($json_liquid_blocks_url);
-    if ( is_wp_error( $json_liquid_blocks ) ) {
-        $json_liquid_blocks_error = $json_liquid_blocks->get_error_message().$json_liquid_blocks_url;
-    }else{
-        $json_liquid_blocks = json_decode($json_liquid_blocks['body'], true);
-    }
+    $liquid_blocks_api = require_once 'inc/api.php';
+    $liquid_blocks_json = $liquid_blocks_api('https://lqd.jp/wp/data/p/liquid-blocks.json', 'liquid_blocks_json');
 }
 
 // notices
 function liquid_blocks_admin_notices() {
-    global $json_liquid_blocks, $json_liquid_blocks_error;
-    if( empty($json_liquid_blocks_error) ) {
+    global $liquid_blocks_json;
+    if( !empty($liquid_blocks_json) ) {
         if ( isset( $_GET['liquid_admin_notices_dismissed'] ) ) {
             set_transient( 'liquid_admin_notices', 'dismissed', 60*60*24*30 );
         }
         if ( isset( $_GET['liquid_admin_offer_dismissed'] ) ) {
             set_transient( 'liquid_admin_offer', 'dismissed', 60*60*24*30 );
         }
-        if( !empty($json_liquid_blocks['news']) && get_transient( 'liquid_admin_notices' ) != 'dismissed' ){
-            echo '<div class="notice notice-info" style="position: relative;"><p>'.$json_liquid_blocks['news'].'</p><a href="?liquid_admin_notices_dismissed" style="position: absolute; right: 10px; top: 10px;">&times;</a></div>';
+        if( !empty($liquid_blocks_json['news']) && get_transient( 'liquid_admin_notices' ) != 'dismissed' ){
+            echo '<div class="notice notice-info" style="position: relative;"><p>'.$liquid_blocks_json['news'].'</p><a href="?liquid_admin_notices_dismissed" style="position: absolute; right: 10px; top: 10px;">&times;</a></div>';
         }
-        if( !empty($json_liquid_blocks['offer']) && get_transient( 'liquid_admin_offer' ) != 'dismissed' ){
-            echo '<div class="notice notice-info" style="position: relative;"><p>'.$json_liquid_blocks['offer'].'</p><a href="?liquid_admin_offer_dismissed" style="position: absolute; right: 10px; top: 10px;">&times;</a></div>';
+        if( !empty($liquid_blocks_json['offer']) && get_transient( 'liquid_admin_offer' ) != 'dismissed' ){
+            echo '<div class="notice notice-info" style="position: relative;"><p>'.$liquid_blocks_json['offer'].'</p><a href="?liquid_admin_offer_dismissed" style="position: absolute; right: 10px; top: 10px;">&times;</a></div>';
         }
     }
 }
@@ -522,7 +516,7 @@ function liquid_blocks_toggle_validation( $input ) {
 }
 
 function liquid_blocks_admin_page() {
-     global $json_liquid_blocks, $liquid_blocks_toggle, $liquid_blocks_no, $liquid_blocks_type, $liquid_blocks_name, $liquid_blocks_clean;
+     global $liquid_blocks_json, $liquid_blocks_toggle, $liquid_blocks_no, $liquid_blocks_type, $liquid_blocks_name, $liquid_blocks_clean;
      if( empty( $liquid_blocks_toggle ) ){
           $toggle_on = 'checked="checked"';
           $toggle_off = '';
@@ -544,10 +538,10 @@ function liquid_blocks_admin_page() {
 <div id="poststuff">
 
 <!-- Recommend -->
-<?php if( !empty($json_liquid_blocks['recommend']) ){ ?>
+<?php if( !empty($liquid_blocks_json) && !empty($liquid_blocks_json['recommend']) ){ ?>
 <div class="postbox">
 <h2 style="border-bottom: 1px solid #eee;"><?php _e( 'Recommend', 'liquid-blocks' ); ?></h2>
-<div class="inside"><?php echo $json_liquid_blocks['recommend']; ?></div>
+<div class="inside"><?php echo $liquid_blocks_json['recommend']; ?></div>
 </div>
 <?php } ?>
 
