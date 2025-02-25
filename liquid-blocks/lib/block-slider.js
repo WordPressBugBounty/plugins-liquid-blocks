@@ -128,6 +128,10 @@
                 type: 'number',
                 default: 3000,
             },
+            speed: {
+                type: 'number',
+                default: 300,
+            },
             slidesPerView: {
                 type: 'number',
                 default: 1.0,
@@ -222,17 +226,22 @@
                     })
                 ),
                 el(InspectorControls, {},
-                    el(PanelBody, { title: __('Slider Settings', 'liquid-blocks'), initialOpen: true },
+                    el(PanelBody, { title: __('Slider Settings', 'liquid-blocks'), initialOpen: true, className: 'liquid-panel' },
                         el('div', {},
                             el(TextControl, {
                                 label: __('Delay (millisecond)', 'liquid-blocks'),
                                 value: attributes.delay,
-                                onChange: (newVal) => setAttributes({ delay: parseInt(newVal, 10) })
+                                onChange: (newVal) => setAttributes({ delay: parseInt(newVal, 10) || 0 })
+                            }),
+                            el(TextControl, {
+                                label: __('Speed (millisecond)', 'liquid-blocks'),
+                                value: attributes.speed,
+                                onChange: (newVal) => setAttributes({ speed: parseInt(newVal, 10) || 0 })
                             }),
                             el(TextControl, {
                                 label: __('Number of slides per view', 'liquid-blocks'),
                                 value: attributes.slidesPerView.toString(),
-                                onChange: (newVal) => setAttributes({ slidesPerView: parseFloat(newVal) })
+                                onChange: (newVal) => setAttributes({ slidesPerView: parseFloat(newVal) || 1 })
                             }),
                             el(SelectControl, {
                                 label: __('Effect', 'liquid-blocks'),
@@ -261,6 +270,7 @@
                 'data-slides-per-view': attributes.slidesPerView,
                 'data-animation-type': attributes.animationType,
                 'data-delay': attributes.delay,
+                'data-speed': attributes.speed,
                 'data-autoplay': attributes.autoPlay.toString(),
             },
                 el('div', { className: 'slides-container swiper-wrapper' },

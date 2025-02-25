@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const slidesPerView = slider.getAttribute('data-slides-per-view') || 1;
             const animationType = slider.getAttribute('data-animation-type') || 'slide';
             const delay = slider.getAttribute('data-delay') || 3000;
+            const speed = slider.getAttribute('data-speed') || 300;
             const autoPlay = slider.getAttribute('data-autoplay') === 'true' ? { delay: parseInt(delay, 10) } : false;
 
             try {
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         crossFade: true
                     },
                     autoplay: autoPlay,
+                    speed: speed,
                     keyboard: {
                         enabled: true,
                     },
@@ -46,4 +48,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // または requestAnimationFrameを使ってスライダーを初期化
     // requestAnimationFrame(initializeSwipers);
+
+    // タブブロック
+    var tabBlocks = document.querySelectorAll(".liquid-tabs");
+    tabBlocks.forEach(function(tabBlock) {
+        var tabNav = tabBlock.querySelector(".liquid-tabs-navigation");
+        var tabItems = tabNav ? tabNav.querySelectorAll(".liquid-tabs-item") : [];
+        var tabContents = tabBlock.querySelectorAll(".liquid-tabs-container .liquid-tabs-tab");
+        // タブのクリック処理
+        tabItems.forEach(function(tabItem, index) {
+            tabItem.addEventListener("click", function() {
+                // すべてのタブアイテムから active クラスを除去
+                tabItems.forEach(function(item) {
+                    item.classList.remove("active");
+                });
+                // クリックされたタブに active クラスを追加
+                tabItem.classList.add("active");
+                // すべてのタブコンテンツを非表示にする
+                tabContents.forEach(function(content) {
+                    content.style.display = "none";
+                });
+                // 対応するタブコンテンツを表示する
+                if (tabContents[index]) {
+                    tabContents[index].style.display = "block";
+                }
+            });
+        });
+    
+        // 初期状態：最初のタブを active にし、最初のコンテンツを表示する
+        if (tabItems.length > 0 && tabContents.length > 0) {
+            tabItems[0].classList.add("active");
+            tabContents.forEach(function(content, i) {
+                content.style.display = (i === 0 ? "block" : "none");
+            });
+        }
+    });
+      
 });

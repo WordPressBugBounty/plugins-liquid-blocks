@@ -8,7 +8,7 @@ Author URI: https://lqd.jp/wp/
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: liquid-blocks
-Version: 1.3.2
+Version: 1.3.3
 */
 /*  Copyright 2019 LIQUID DESIGN Ltd. (email : info@lqd.jp)
 
@@ -92,8 +92,10 @@ function liquid_blocks_enqueue_block_editor_assets(){
     wp_enqueue_script( 'liquid-blocks-template', plugins_url( 'lib/template.js', __FILE__ ), array(), $liquid_blocks_data['version'] );
     wp_enqueue_script( 'liquid-blocks', plugins_url( 'lib/block.js', __FILE__ ), array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-plugins', 'wp-edit-post', 'wp-components', 'liquid-blocks-template', 'clipboard' ), $liquid_blocks_data['version'] );
     wp_enqueue_script( 'liquid-blocks-cards', plugins_url( 'lib/block-cards.js', __FILE__ ), array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-components' ) );
+    wp_enqueue_script( 'liquid-blocks-tabs', plugins_url( 'lib/block-tabs.js', __FILE__ ), array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-components' ) );
     wp_set_script_translations( 'liquid-blocks', 'liquid-blocks', plugin_dir_path( __FILE__ ) . 'languages' );
     wp_set_script_translations( 'liquid-blocks-cards', 'liquid-blocks', plugin_dir_path( __FILE__ ) . 'languages' );
+    wp_set_script_translations( 'liquid-blocks-tabs', 'liquid-blocks', plugin_dir_path( __FILE__ ) . 'languages' );
     wp_localize_script( 'liquid-blocks-template', 'liquid_blocks_imgurl', array( plugins_url( 'images/', __FILE__ ) ) );
     wp_localize_script( 'liquid-blocks', 'liquid_blocks_imgurl', array( plugins_url( 'images/', __FILE__ ) ) );
     wp_localize_script( 'liquid-blocks', 'liquid_blocks_no', $liquid_blocks_no );
@@ -242,6 +244,9 @@ function liquid_blocks_init(){
             'delay' => array(
                 'type' => 'number',
             ),
+            'speed' => array(
+                'type' => 'number',
+            ),
             'slidesPerView' => array(
                 'type' => 'number',
             ),
@@ -276,6 +281,148 @@ function liquid_blocks_init(){
         'liquid-blocks', 
         plugin_dir_path( __FILE__ ) . 'languages' 
     );
+
+    // isカスタム
+    register_block_type( 'liquid/if-conditions', array(
+        'editor_script'   => 'liquid-blocks-if-conditions',
+        'render_callback' => 'liquid_blocks_is_custom',
+    ) );
+    wp_register_script( 
+        'liquid-blocks-if-conditions', 
+        plugins_url( 'lib/block-if-conditions.js', __FILE__ ), 
+        array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-components' ) 
+    );
+    wp_set_script_translations( 
+        'liquid-blocks-if-conditions', 
+        'liquid-blocks', 
+        plugin_dir_path( __FILE__ ) . 'languages' 
+    );
+    function liquid_blocks_is_custom( $attributes, $content ) {
+        $visibility   = isset( $attributes['visibility'] ) ? $attributes['visibility'] : '';
+        $role         = isset( $attributes['role'] ) ? $attributes['role'] : '';
+        $parameters = isset( $attributes['parameters'] ) ? htmlspecialchars($attributes['parameters']) : '';
+        $conditionType = isset( $attributes['conditionType'] ) ? $attributes['conditionType'] : '';
+    
+        // is_user_logged_in
+        if ( 'is_user_logged_in' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_user_logged_in() ) { return ''; }
+                // role
+                if ( $role ) {
+                    $current_user = wp_get_current_user();
+                    if ( ! in_array( $role, (array) $current_user->roles, true ) ) { return ''; }
+                }
+            } else {
+                if ( is_user_logged_in() ) { return ''; }
+            }
+        }
+        // is_front_page
+        if ( 'is_front_page' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_front_page() ) { return ''; }
+            } else {
+                if ( is_front_page() ) { return ''; }
+            }
+        }
+        // is_front_page
+        if ( 'is_front_page' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_front_page() ) { return ''; }
+            } else {
+                if ( is_front_page() ) { return ''; }
+            }
+        }
+        // is_home
+        if ( 'is_home' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_home() ) { return ''; }
+            } else {
+                if ( is_home() ) { return ''; }
+            }
+        }
+        // is_page
+        if ( 'is_page' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_page($parameters) ) { return ''; }
+            } else {
+                if ( is_page($parameters) ) { return ''; }
+            }
+        }
+        // is_single
+        if ( 'is_single' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_single($parameters) ) { return ''; }
+            } else {
+                if ( is_single($parameters) ) { return ''; }
+            }
+        }
+        // is_singular
+        if ( 'is_singular' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_singular($parameters) ) { return ''; }
+            } else {
+                if ( is_singular($parameters) ) { return ''; }
+            }
+        }
+        // is_archive
+        if ( 'is_archive' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_archive() ) { return ''; }
+            } else {
+                if ( is_archive() ) { return ''; }
+            }
+        }
+        // is_category
+        if ( 'is_category' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_category($parameters) ) { return ''; }
+            } else {
+                if ( is_category($parameters) ) { return ''; }
+            }
+        }
+        // is_tag
+        if ( 'is_tag' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_tag($parameters) ) { return ''; }
+            } else {
+                if ( is_tag($parameters) ) { return ''; }
+            }
+        }
+        // is_author
+        if ( 'is_author' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_author($parameters) ) { return ''; }
+            } else {
+                if ( is_author($parameters) ) { return ''; }
+            }
+        }
+        // is_tax
+        if ( 'is_tax' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! is_tax($parameters) ) { return ''; }
+            } else {
+                if ( is_tax($parameters) ) { return ''; }
+            }
+        }
+        // has_post_format
+        if ( 'has_post_format' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! has_post_format($parameters) ) { return ''; }
+            } else {
+                if ( has_post_format($parameters) ) { return ''; }
+            }
+        }
+        // wp_is_mobile
+        if ( 'wp_is_mobile' === $visibility ) {
+            if( ! $conditionType ){
+                if ( ! wp_is_mobile() ) { return ''; }
+            } else {
+                if ( wp_is_mobile() ) { return ''; }
+            }
+        }
+        // content
+        return '<div class="liquid-if-conditions">' . $content . '</div>';
+    }
 
     // unregister_block_pattern
     if( !empty($liquid_blocks_clean) ){

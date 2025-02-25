@@ -3,8 +3,8 @@ Contributors: lqd
 Donate link: https://lqd.jp/wp/plugin/blocks.html
 Tags: gutenberg, blocks, pattern, slider, carousel
 Requires at least: 6.0
-Tested up to: 6.7.1
-Stable tag: 1.3.2
+Tested up to: 6.7.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,9 +26,11 @@ https://www.youtube.com/watch?v=pNpv_SA_NNY
 
 Simple yet powerful blocks.
 * Carousel Slider (Slideshow, Fade)
+* Tabs
 * Accordion
 * Card
 * Custom Field
+* If Condition
 
 = Toolbar =
 
@@ -72,6 +74,9 @@ A: Try More options > Attempt Block Recovery.
 8. Design Gallery.
 
 == Changelog ==
+
+= 1.3.3 =
+* Add Tabs block and If Condition Block.
 
 = 1.3.0 =
 * Add Custom Field block and Update Slider Block.

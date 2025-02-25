@@ -11,7 +11,7 @@ msgstr ""
 "<translations@example."
 "com>\n"
 "POT-Creation-Date: "
-"2024-10-24 17:14+0900\n"
+"2025-02-25 08:43+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Your "
 "Name <you@example.com>\n"
@@ -45,7 +45,7 @@ msgstr ""
 "_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Generator: Poedit "
-"3.4.2\n"
+"3.5\n"
 "X-Poedit-"
 "SearchPath-0: .\n"
 "X-Poedit-"
@@ -91,27 +91,27 @@ msgstr ""
 msgid "Custom Field"
 msgstr ""
 
-#: lib/block-custom-field.js:62
+#: lib/block-custom-field.js:63
 msgid ""
 "Custom Field Settings"
 msgstr ""
 
-#: lib/block-custom-field.js:66
+#: lib/block-custom-field.js:67
 msgid "Custom Field Key"
 msgstr ""
 
-#: lib/block-custom-field.js:71
+#: lib/block-custom-field.js:72
 msgid ""
 "Enter custom field key "
 "to display data on "
 "public screens."
 msgstr ""
 
-#: lib/block-custom-field.js:77
+#: lib/block-custom-field.js:78
 msgid "Post ID"
 msgstr ""
 
-#: lib/block-custom-field.js:82
+#: lib/block-custom-field.js:83
 msgid ""
 "Enter a Post ID to "
 "retrieve custom field "
@@ -120,56 +120,172 @@ msgid ""
 "use current post."
 msgstr ""
 
-#: lib/block-custom-field.js:88
+#: lib/block-custom-field.js:89
 msgid "Field Type"
 msgstr ""
 
-#: lib/block-custom-field.js:91
+#: lib/block-custom-field.js:92
 msgid "Text"
 msgstr ""
 
-#: lib/block-custom-field.js:92
+#: lib/block-custom-field.js:93
 msgid "Image"
 msgstr ""
 
-#: lib/block-custom-field.js:97
+#: lib/block-custom-field.js:98
 msgid ""
 "Select whether the "
 "custom field is a text "
 "or an image field."
 msgstr ""
 
-#: lib/block-custom-field.js:116
+#: lib/block-custom-field.js:117
 msgid "Custom Field Key: "
 msgstr ""
 
-#: lib/block-custom-field.js:116
+#: lib/block-custom-field.js:117
 msgid "Null"
 msgstr ""
 
-#: lib/block-custom-field.js:116
+#: lib/block-custom-field.js:117
 msgid "Post ID: "
 msgstr ""
 
-#: lib/block-custom-field.js:116
+#: lib/block-custom-field.js:117
 msgid "Current Post"
 msgstr ""
 
+#: lib/block-if-conditions.js:12
+msgid "If conditions"
+msgstr ""
+
+#: lib/block-if-conditions.js:58
+msgid "Display Settings"
+msgstr ""
+
+#: lib/block-if-conditions.js:60
+msgid "Display Options"
+msgstr ""
+
+#: lib/block-if-conditions.js:63
+msgid "Default"
+msgstr ""
+
+#: lib/block-if-conditions.js:64
+msgid "is_user_logged_in"
+msgstr ""
+
+#: lib/block-if-conditions.js:65
+msgid "is_front_page"
+msgstr ""
+
+#: lib/block-if-conditions.js:66
+msgid "is_home"
+msgstr ""
+
+#: lib/block-if-conditions.js:67
+msgid "is_page"
+msgstr ""
+
+#: lib/block-if-conditions.js:68
+msgid "is_single"
+msgstr ""
+
+#: lib/block-if-conditions.js:69
+msgid "is_singular"
+msgstr ""
+
+#: lib/block-if-conditions.js:70
+msgid "is_archive"
+msgstr ""
+
+#: lib/block-if-conditions.js:71
+msgid "is_category"
+msgstr ""
+
+#: lib/block-if-conditions.js:72
+msgid "is_tag"
+msgstr ""
+
+#: lib/block-if-conditions.js:73
+msgid "is_author"
+msgstr ""
+
+#: lib/block-if-conditions.js:74
+msgid "is_tax"
+msgstr ""
+
+#: lib/block-if-conditions.js:75
+msgid "has_post_format"
+msgstr ""
+
+#: lib/block-if-conditions.js:76
+msgid "wp_is_mobile"
+msgstr ""
+
+#: lib/block-if-conditions.js:85
+msgid "Role Type"
+msgstr ""
+
+#: lib/block-if-conditions.js:88
+msgid "All Users"
+msgstr ""
+
+#: lib/block-if-conditions.js:89
+msgid "Administrator"
+msgstr ""
+
+#: lib/block-if-conditions.js:90
+msgid "Editor"
+msgstr ""
+
+#: lib/block-if-conditions.js:91
+msgid "Author"
+msgstr ""
+
+#: lib/block-if-conditions.js:92
+msgid "Contributor"
+msgstr ""
+
+#: lib/block-if-conditions.js:93
+msgid "Subscriber"
+msgstr ""
+
+#: lib/block-if-conditions.js:109
+msgid ""
+"Parameters (Option)"
+msgstr ""
+
+#: lib/block-if-conditions.js:117
+msgid "Condition Type"
+msgstr ""
+
+#: lib/block-if-conditions.js:120
+msgid "Match"
+msgstr ""
+
+#: lib/block-if-conditions.js:121
+msgid "Not Match"
+msgstr ""
+
 #: lib/block-slider.js:18
-#: lib/block-slider.js:197
-#: lib/block-slider.js:242
+#: lib/block-slider.js:200
+#: lib/block-slider.js:250
 msgid "Slide"
 msgstr ""
 
 #: lib/block-slider.js:93
+#: lib/block-tabs.js:100
 msgid "Up"
 msgstr ""
 
 #: lib/block-slider.js:100
+#: lib/block-tabs.js:106
 msgid "Down"
 msgstr ""
 
 #: lib/block-slider.js:106
+#: lib/block-tabs.js:112
 msgid "Remove"
 msgstr ""
 
@@ -177,250 +293,305 @@ msgstr ""
 msgid "Carousel Slider"
 msgstr ""
 
-#: lib/block-slider.js:214
+#: lib/block-slider.js:217
 msgid "Add Slide"
 msgstr ""
 
-#: lib/block-slider.js:226
+#: lib/block-slider.js:229
 msgid "Slider Settings"
 msgstr ""
 
-#: lib/block-slider.js:229
+#: lib/block-slider.js:232
 msgid ""
 "Delay (millisecond)"
 msgstr ""
 
-#: lib/block-slider.js:234
+#: lib/block-slider.js:237
+msgid ""
+"Speed (millisecond)"
+msgstr ""
+
+#: lib/block-slider.js:242
 msgid ""
 "Number of slides per "
 "view"
 msgstr ""
 
-#: lib/block-slider.js:239
+#: lib/block-slider.js:247
 msgid "Effect"
 msgstr ""
 
-#: lib/block-slider.js:243
+#: lib/block-slider.js:251
 msgid "Fade"
 msgstr ""
 
-#: lib/block-slider.js:248
+#: lib/block-slider.js:256
 msgid "Auto Play"
 msgstr ""
 
+#: lib/block-tabs.js:16
+#: lib/block-tabs.js:205
+#: lib/block-tabs.js:262
+#: lib/block-tabs.js:322
+#: lib/block-tabs.js:353
+msgid "Tab"
+msgstr ""
+
+#: lib/block-tabs.js:76
+msgid "Tab content..."
+msgstr ""
+
+#: lib/block-tabs.js:135
+msgid "Tabs"
+msgstr ""
+
+#: lib/block-tabs.js:219
+msgid "Tabs Colors"
+msgstr ""
+
+#: lib/block-tabs.js:220
+msgid ""
+"Active Tab Background "
+"Color"
+msgstr ""
+
+#: lib/block-tabs.js:228
+msgid ""
+"Active Tab Text Color"
+msgstr ""
+
+#: lib/block-tabs.js:236
+msgid ""
+"Inactive Tab Background "
+"Color"
+msgstr ""
+
+#: lib/block-tabs.js:244
+msgid ""
+"Inactive Tab Text Color"
+msgstr ""
+
+#: lib/block-tabs.js:280
+msgid "Tab title..."
+msgstr ""
+
+#: lib/block-tabs.js:341
+msgid "Add Tab"
+msgstr ""
+
 #: lib/block.js:72
-#: liquid-blocks.php:172
+#: liquid-blocks.php:167
 #: src/block.js:57
 msgid "Layouts"
 msgstr ""
 
 #: lib/block.js:87
 #: lib/block.js:95
-#: src/block.js:67
-#: src/block.js:73
+#: src/block.js:68
+#: src/block.js:74
 msgid "LIQUID BLOCKS"
 msgstr ""
 
 #: lib/block.js:100
-#: liquid-blocks.php:574
-#: src/block.js:76
+#: liquid-blocks.php:722
+#: src/block.js:77
 msgid "Shortcuts"
 msgstr ""
 
 #: lib/block.js:225
-#: liquid-blocks.php:81
-#: liquid-blocks.php:557
-#: src/block.js:173
+#: liquid-blocks.php:74
+#: liquid-blocks.php:705
+#: src/block.js:174
 msgid "Settings"
 msgstr ""
 
 #: lib/block.js:233
-#: src/block.js:177
+#: src/block.js:178
 msgid "Gallery"
 msgstr ""
 
 #: lib/block.js:245
-#: src/block.js:184
+#: src/block.js:185
 msgid ""
 "Just choose your "
 "favorite design!"
 msgstr ""
 
 #: lib/block.js:295
-#: liquid-blocks.php:306
-#: liquid-blocks.php:565
-#: liquid-blocks.php:566
-#: src/block.js:233
+#: liquid-blocks.php:454
+#: liquid-blocks.php:713
+#: liquid-blocks.php:714
+#: src/block.js:234
 msgid ""
 "Block Pattern Manager"
 msgstr ""
 
 #: lib/block.js:301
-#: src/block.js:233
+#: src/block.js:234
 msgid "LIQUID PRESS"
 msgstr ""
 
 #: lib/block.js:316
 #: lib/block.js:324
-#: src/block.js:244
-#: src/block.js:256
+#: src/block.js:247
+#: src/block.js:259
 msgid "Mark"
 msgstr ""
 
 #: lib/block.js:334
 #: lib/block.js:342
-#: src/block.js:266
-#: src/block.js:278
+#: src/block.js:270
+#: src/block.js:282
 msgid "Big"
 msgstr ""
 
 #: lib/block.js:352
 #: lib/block.js:360
-#: src/block.js:288
-#: src/block.js:300
+#: src/block.js:293
+#: src/block.js:305
 msgid "Small"
 msgstr ""
 
 #: lib/block.js:370
 #: lib/block.js:378
-#: src/block.js:310
-#: src/block.js:322
+#: src/block.js:316
+#: src/block.js:328
 msgid "Underline"
 msgstr ""
 
 #: lib/block.js:447
-#: src/block.js:389
+#: src/block.js:396
 msgid ""
 "The copied block can be "
 "inserted with \"Ctrl + "
 "v\"."
 msgstr ""
 
-#: liquid-blocks.php:133
+#: liquid-blocks.php:128
 msgid "Block Patterns"
 msgstr ""
 
-#: liquid-blocks.php:140
-#: liquid-blocks.php:380
+#: liquid-blocks.php:135
+#: liquid-blocks.php:528
 msgid "Untitled block"
 msgstr ""
 
-#: liquid-blocks.php:170
-#: liquid-blocks.php:222
+#: liquid-blocks.php:165
+#: liquid-blocks.php:217
 msgid "Headlines"
 msgstr ""
 
-#: liquid-blocks.php:174
+#: liquid-blocks.php:169
 msgid "Price list"
 msgstr ""
 
-#: liquid-blocks.php:176
+#: liquid-blocks.php:171
 msgid ""
 "CTA: Call To Action"
 msgstr ""
 
-#: liquid-blocks.php:178
+#: liquid-blocks.php:173
 msgid "Landing pages"
 msgstr ""
 
-#: liquid-blocks.php:180
+#: liquid-blocks.php:175
 msgid ""
 "Recommended Plugins"
 msgstr ""
 
-#: liquid-blocks.php:186
+#: liquid-blocks.php:181
 msgid "Copy"
 msgstr ""
 
-#: liquid-blocks.php:187
+#: liquid-blocks.php:182
 msgid "Insert"
 msgstr ""
 
-#: liquid-blocks.php:188
+#: liquid-blocks.php:183
 msgid "Select"
 msgstr ""
 
-#: liquid-blocks.php:189
+#: liquid-blocks.php:184
 msgid "Cancel"
 msgstr ""
 
-#: liquid-blocks.php:190
+#: liquid-blocks.php:185
 msgid "Close"
 msgstr ""
 
-#: liquid-blocks.php:310
-#: liquid-blocks.php:311
-#: liquid-blocks.php:312
+#: liquid-blocks.php:458
+#: liquid-blocks.php:459
+#: liquid-blocks.php:460
 msgid "Block Pattern"
 msgstr ""
 
-#: liquid-blocks.php:313
+#: liquid-blocks.php:461
 msgid "Block Pattern List"
 msgstr ""
 
-#: liquid-blocks.php:314
-#: liquid-blocks.php:315
-#: liquid-blocks.php:350
+#: liquid-blocks.php:462
+#: liquid-blocks.php:463
+#: liquid-blocks.php:498
 msgid "Add New"
 msgstr ""
 
-#: liquid-blocks.php:316
+#: liquid-blocks.php:464
 msgid "Edit"
 msgstr ""
 
-#: liquid-blocks.php:342
-#: liquid-blocks.php:349
+#: liquid-blocks.php:490
+#: liquid-blocks.php:497
 msgid ""
 "Block Pattern Category"
 msgstr ""
 
-#: liquid-blocks.php:351
+#: liquid-blocks.php:499
 msgid ""
 "Press the Enter key."
 msgstr ""
 
-#: liquid-blocks.php:466
+#: liquid-blocks.php:614
 msgid ""
 "No custom field "
 "selected."
 msgstr ""
 
-#: liquid-blocks.php:482
-#: liquid-blocks.php:483
+#: liquid-blocks.php:630
+#: liquid-blocks.php:631
 msgid "Patterns"
 msgstr ""
 
-#: liquid-blocks.php:519
+#: liquid-blocks.php:667
 msgid "illegal data"
 msgstr ""
 
-#: liquid-blocks.php:550
+#: liquid-blocks.php:698
 msgid "Recommend"
 msgstr ""
 
-#: liquid-blocks.php:567
+#: liquid-blocks.php:715
 msgid "Featured Image"
 msgstr ""
 
-#: liquid-blocks.php:568
+#: liquid-blocks.php:716
 msgid ""
 "Enable default block "
 "pattern"
 msgstr ""
 
-#: liquid-blocks.php:575
+#: liquid-blocks.php:723
 msgid ""
 "Sidebar shortcut button "
 "settings."
 msgstr ""
 
-#: liquid-blocks.php:575
+#: liquid-blocks.php:723
 msgid ""
 "Enter any name, gallery "
 "category name, and "
 "number."
 msgstr ""
 
-#: liquid-blocks.php:587
+#: liquid-blocks.php:735
 msgid "Enable"
 msgstr ""

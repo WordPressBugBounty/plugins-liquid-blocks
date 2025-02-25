@@ -60,7 +60,7 @@
                     // Custom Field Settings Panel
                     createElement(
                         PanelBody,
-                        { title: __('Custom Field Settings', 'liquid-blocks') },
+                        { title: __('Custom Field Settings', 'liquid-blocks'), className: 'liquid-panel' },
                         createElement(
                             TextControl,
                             {

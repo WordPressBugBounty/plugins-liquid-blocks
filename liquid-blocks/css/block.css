@@ -285,3 +285,29 @@ p.has-background {
     opacity: 1;
     visibility: visible;
 }
+
+/* tabs */
+.liquid-tabs .liquid-tabs-navigation {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+}
+.liquid-tabs .liquid-tabs-item {
+    padding: .5rem 1rem;
+    cursor: pointer;
+    background: var(--inactive-bg);
+    color: var(--inactive-text);
+    border: 1px solid #ccc;
+    border-bottom: 0 none;
+    border-radius: 5px 5px 0 0;
+    margin-right: .5rem;
+    transition: all 0.3s, color 0.3s;
+}
+.liquid-tabs .liquid-tabs-item.active {
+    background: var(--active-bg);
+    color: var(--active-text);
+}
+.liquid-tabs .liquid-tabs-container {
+    border: 1px solid #ccc;
+    margin-top: -1px;
+    padding: 0 1rem;
+}

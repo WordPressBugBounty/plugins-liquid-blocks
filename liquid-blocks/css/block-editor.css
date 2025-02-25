@@ -283,3 +283,33 @@ Author URI: https://lqd.jp/wp/
     opacity: 1;
     visibility: visible;
 }
+
+/* if-conditions */
+.liquid-panel button:before {
+    content: '';
+    background: transparent url(../assets/images/liquid.svg) 0 -2px no-repeat;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 0.25rem;
+}
+.liquid-if-conditions {
+    border: 2px solid red;
+    padding: 2rem 1rem 1rem 1rem;
+}
+.liquid-if-conditions::before {
+    content: 'if';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    background: red;
+    font-size: small;
+    padding: 5px 10px;
+    color: #333;
+}
+
+/* tabs */
+.liquid-tabs-tab {
+    padding: 2rem 1rem 1rem 1rem;
+}
